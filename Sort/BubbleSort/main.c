@@ -3,10 +3,10 @@
  *
  *  Created on: 27 de mar. de 2021
  *      Author: vinicius.barros
- *  Testing insertion algorithm
+ *      Testing Bubble Sort algorithm
  */
 #include "../../Utils/intarray.h"
-#include "insertion.h"
+#include "bubblesort.h"
 
 int main(void){
 
@@ -22,7 +22,7 @@ int main(void){
     printf("Before:\n");
     printArray(intArray);
 
-    insertion(intArray->v,intArray->arraySize);
+    bubbleSort(intArray->v,intArray->arraySize);
 
     printf("After:\n");
     printArray(intArray);

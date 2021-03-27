@@ -26,7 +26,7 @@ void printArray(IntArray*intArray){
     int n = intArray->arraySize;
 	for(i=0;i<n;i++){
 		printf("%03d ",*(intArray->v+i));
-		if(i%11==10)
+		if(i%10==9)
 			printf("\n");
 	}
 	printf("\n");

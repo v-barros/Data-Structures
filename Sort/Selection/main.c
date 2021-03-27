@@ -3,10 +3,10 @@
  *
  *  Created on: 27 de mar. de 2021
  *      Author: vinicius.barros
- *  Testing insertion algorithm
+ *      Testing Selection Algorithm
  */
 #include "../../Utils/intarray.h"
-#include "insertion.h"
+#include "selection.h"
 
 int main(void){
 
@@ -22,10 +22,12 @@ int main(void){
     printf("Before:\n");
     printArray(intArray);
 
-    insertion(intArray->v,intArray->arraySize);
+    selection(intArray->v,intArray->arraySize);
 
     printf("After:\n");
     printArray(intArray);
 
     return 0;
 }
+
+

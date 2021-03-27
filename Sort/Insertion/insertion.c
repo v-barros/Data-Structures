@@ -5,7 +5,6 @@
  *      Author: vinicius.barros
  */
 
-#include "../../Utils/intarray.h"
 #include "insertion.h"
 
 void insertion(int *v,int n){
