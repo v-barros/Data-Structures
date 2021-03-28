@@ -24,6 +24,7 @@ IntArray* initializeIntArray(int n){
 void printArray(IntArray*intArray){
     int i;
     int n = intArray->arraySize;
+    printf("Array:\n");
 	for(i=0;i<n;i++){
 		printf("%03d ",*(intArray->v+i));
 		if(i%10==9)
@@ -37,4 +38,10 @@ void fill(IntArray*intArray){
     int n = intArray->arraySize;
 	for(i=0;i<n;i++)
 		*(intArray->v+i) = (int)rand()%1000;
+}
+void fillSorted(IntArray *intArray){
+	int i;
+	int n = intArray->arraySize;
+	for(i=0;i<n;i++)
+		*(intArray->v+i)=i*2+1;
 }
