@@ -19,7 +19,7 @@ int *v;
 IntArray* initializeIntArray(int);
 void printArray(IntArray*);
 void fill(IntArray*);
-
+void fillSorted(IntArray*);
 
 
 #endif /* INTARRAY_H_ */
