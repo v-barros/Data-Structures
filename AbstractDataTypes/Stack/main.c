@@ -7,9 +7,10 @@
  */
 #include <stdio.h>
 #include "stack.h"
+#define STACK_SIZE 100
 
 int main(void){
-	Stack* stack = newStack(20);
+	Stack* stack = newStack(STACK_SIZE);
 	int op,i=1,n;
 	int *p = &n;
 		do {

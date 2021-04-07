@@ -16,7 +16,7 @@ Stack * newStack(int size){
 	if(p==NULL)
 		return NULL;
 
-	p->items = (int*) malloc(size*sizeof(Stack));
+	p->items = (int*) malloc(size*sizeof(int));
 	if(p->items==NULL){
 		free(p);
 		return NULL;
