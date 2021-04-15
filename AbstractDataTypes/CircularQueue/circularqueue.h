@@ -5,7 +5,7 @@
  *      Author: vinicius.barros
  */
 
-#ifndef CULARQUEUE_H_
+#ifndef CIRCULARQUEUE_H_
 #define CIRCULARQUEUE_H_
 
 

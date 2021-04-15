@@ -12,8 +12,8 @@
 
 int main(void){
 	Queue * queue = newQueue(QUEUE_SIZE);
-	int op,i=1,n;
-	int *p = &n;
+	int op,i=1;
+
 		do {
 			printf("\n\nTesting Queue\n");
 	        printf("<1> Enqueue\n");
