@@ -31,7 +31,7 @@ Node * newNode(int n){
 int insert(LinkedList * linkedList, int numToAdd){
 	 Node * node = newNode(numToAdd);
 	 if(node!=NULL){
-		 node->next =(struct Node *)linkedList->head;
+		 node->next =linkedList->head;
 	 	 linkedList->head =node;
 	 	 linkedList->size++;
 	 	 return 1;
@@ -44,7 +44,7 @@ int removeFirstOf(LinkedList * linkedList,int numToRemove){
 	Node * previous = node;
 
 	if(node->value == numToRemove){//numToRemove is at linked list head
-		linkedList->head =(Node *) node->next;
+		linkedList->head =node->next;
 		free(node);
 		linkedList->size--;
 		return 1;
@@ -52,7 +52,7 @@ int removeFirstOf(LinkedList * linkedList,int numToRemove){
 
 	while(node!=NULL && node->value!=numToRemove){
 		previous = node;
-		node =(Node *) node->next;
+		node = node->next;
 
 	}
 	if(node!=NULL){// then node->value == numToRemove
@@ -89,7 +89,7 @@ void printList(LinkedList * linkedList){
 		if(i%10==9)
 			printf("\n");
 
-		node =(Node *) node->next;
+		node = node->next;
 		i++;
 	}
 

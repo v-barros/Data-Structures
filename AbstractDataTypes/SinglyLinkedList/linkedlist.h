@@ -8,10 +8,12 @@
 #ifndef SINGLYLINKEDLIST_H_
 #define SINGLYLINKEDLIST_H_
 
-typedef struct {
+
+struct Node {
 	int value;
 	struct Node * next;
-}Node;
+};
+typedef struct Node Node;
 
 typedef struct {
 	int size;
