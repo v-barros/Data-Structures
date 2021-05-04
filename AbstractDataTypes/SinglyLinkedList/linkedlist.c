@@ -69,12 +69,12 @@ int size(LinkedList * linkedList){
 	return linkedList->size;
 }
 
-int isEmpty(LinkedList * linkedList){
+int isEmptyT(LinkedList * linkedList){
 	return linkedList->head==NULL;
 }
 
 void printList(LinkedList * linkedList){
-	if(isEmpty(linkedList)){
+	if(isEmptyT(linkedList)){
 		printf("\nList is empty!\n");
 		return;
 	}

@@ -34,7 +34,7 @@ int peek(Stack *,int*);
 int isFull(Stack *);
 
 /*Checks whether its empty or not, returns 1 or 0 */
-int isEmpty(Stack *);
+int isEmptyT(Stack *);
 
 /*Print stack from base to top*/
 void printStack(Stack*);

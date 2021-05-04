@@ -41,7 +41,7 @@ int enqueue(Queue * queue,int numToAdd){
 }
 
 int dequeue(Queue * queue){
-	if(isEmpty(queue))
+	if(isEmptyT(queue))
 		return 0;
 
 	queue->front++;
@@ -50,7 +50,7 @@ int dequeue(Queue * queue){
 }
 
 int peek(Queue * queue, int * value){
-	if(isEmpty(queue))
+	if(isEmptyT(queue))
 		return 0;
 
 	*(value) = *(queue->data+queue->front);
@@ -61,7 +61,7 @@ int size(Queue * queue){
 	return queue->size;
 }
 
-int isEmpty(Queue * queue){
+int isEmptyT(Queue * queue){
 	return(!queue->size);
 }
 
@@ -70,7 +70,7 @@ int isFull(Queue * queue){
 }
 
 void printQueue(Queue* queue){
-	if(isEmpty(queue)){
+	if(isEmptyT(queue)){
 		printf("\nQueue is Empty!\n");
 		return;
 	}

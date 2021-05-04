@@ -31,7 +31,7 @@ Node * newNode(int n){
 int insertFirst(LinkedList *linkedList,int numToAdd){
 	Node * newnode = newNode(numToAdd);
 	if(newnode!=NULL){
-		if(isEmpty(linkedList)){
+		if(isEmptyT(linkedList)){
 			linkedList->last = newnode;
 		}else{
 			linkedList->head->previous = newnode;
@@ -47,7 +47,7 @@ int insertFirst(LinkedList *linkedList,int numToAdd){
 int insertLast(LinkedList * linkedList,int numToAdd){
 	Node * newnode = newNode(numToAdd);
 	if(newnode!=NULL){
-		if(isEmpty(linkedList)){
+		if(isEmptyT(linkedList)){
 			linkedList->head = newnode;
 		}else{
 			linkedList->last->next =newnode;
@@ -61,7 +61,7 @@ int insertLast(LinkedList * linkedList,int numToAdd){
 }
 
 int removeFirstOf(LinkedList * linkedList,int numToRemove){
-	if(isEmpty(linkedList))
+	if(isEmptyT(linkedList))
 		return 0;
 
 	Node * node  = linkedList->head;
@@ -98,7 +98,7 @@ int removeFirstOf(LinkedList * linkedList,int numToRemove){
 }
 
 int removeLastOf(LinkedList * linkedList,int numToRemove){
-	if(isEmpty(linkedList))
+	if(isEmptyT(linkedList))
 			return 0;
 
 	Node * node  = linkedList->last;
@@ -138,12 +138,12 @@ int size(LinkedList * linkedList){
 	return linkedList->size;
 }
 
-int isEmpty(LinkedList * linkedList){
+int isEmptyT(LinkedList * linkedList){
 	return linkedList->head == NULL;
 }
 
 void printListForwards(LinkedList * linkedList){
-	if(isEmpty(linkedList)){
+	if(isEmptyT(linkedList)){
 		printf("\nList is empty!\n");
 		return;
 	}
@@ -162,7 +162,7 @@ void printListForwards(LinkedList * linkedList){
 }
 
 void printListBackwards(LinkedList * linkedList){
-	if(isEmpty(linkedList)){
+	if(isEmptyT(linkedList)){
 		printf("\nList is empty!\n");
 		return;
 	}

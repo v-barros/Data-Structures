@@ -47,7 +47,7 @@ int pushMany(Stack * stack, int numToAdd,int nTimes){
 }
 
 int pop(Stack * stack){
-	if(isEmpty(stack))
+	if(isEmptyT(stack))
 		return 0;
 	stack->top--;
 	return 1;
@@ -61,7 +61,7 @@ int popMany(Stack * stack, int nTimes){
 }
 
 int peek(Stack * stack, int *value){
-	if(isEmpty(stack))
+	if(isEmptyT(stack))
 		return 0;
 	*value =  *(stack->items+stack->top-1);
 	return 1;
@@ -71,7 +71,7 @@ int isFull(Stack * stack){
 	return(stack->top>=stack->stackSize);
 }
 
-int isEmpty(Stack *stack){
+int isEmptyT(Stack *stack){
 	return(!stack->top);
 }
 

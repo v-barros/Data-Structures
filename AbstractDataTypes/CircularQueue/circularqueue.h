@@ -28,7 +28,7 @@ int dequeue(Queue *);
 int size(Queue *);
 
 /*Check whether the queue is empty or not, return 1 or 0 */
-int isEmpty(Queue *);
+int isEmptyT(Queue *);
 
 /*Check whether the queue is full or not, return 1 or 0 */
 int isFull(Queue *);

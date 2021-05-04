@@ -42,7 +42,7 @@ int enqueue(Queue * queue,int numToAdd){
 }
 
 int dequeue(Queue * queue){
-	if(isEmpty(queue))
+	if(isEmptyT(queue))
 			return INT_MIN;
 	int n = *(queue->data+queue->front);
 	queue->front = (queue->front+1)%queue->capacity;
@@ -54,7 +54,7 @@ int size(Queue * queue){
 	return queue->size;
 }
 
-int isEmpty(Queue * queue){
+int isEmptyT(Queue * queue){
 	return (!queue->size);
 }
 
@@ -63,7 +63,7 @@ int isFull(Queue * queue){
 }
 
 void printQueue(Queue* queue){
-	if(isEmpty(queue)){
+	if(isEmptyT(queue)){
 		printf("\nQueue is Empty!\n");
 		return;
 	}

@@ -41,7 +41,7 @@ int removeLastOf(LinkedList *,int);
 int size(LinkedList *);
 
 /* – Return true if the 1 is empty, otherwise return 0.*/
-int isEmpty(LinkedList *);
+int isEmptyT(LinkedList *);
 
 /* - Traverse the list and print the elements  */
 void printListForwards(LinkedList *);

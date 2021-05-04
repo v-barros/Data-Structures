@@ -32,7 +32,7 @@ int removeFirstOf(LinkedList *,int);
 int size(LinkedList *);
 
 /* – Return true if the list is empty, otherwise return false.*/
-int isEmpty(LinkedList *);
+int isEmptyT(LinkedList *);
 
 /* - Traverse the list and print the elements  */
 void printList(LinkedList *);
