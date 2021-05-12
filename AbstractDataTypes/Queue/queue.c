@@ -2,7 +2,7 @@
  * queue.c
  *
  *  Created on: 2021-04-06
- *      Author: vinicius.barros
+ *      Author: @v-barros
  *      Implements queue.h
  *
  *      I chose to implement this queue by using a static array, but there is a way to implement queues using a linked list.

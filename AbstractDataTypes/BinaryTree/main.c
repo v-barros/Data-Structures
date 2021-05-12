@@ -2,7 +2,7 @@
  * main.c
  *
  *  Created on: 2021-04-28
- *      Author: vinicius.barros
+ *      Author: @v-barros
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,18 +28,18 @@ int main(void){
 	    while(getchar()!='\n');
 	    switch (op) {
 	    	case 1:
-	    		printf("\nNumber to add => ");
-	    		scanf("%d", &i);
-	    		printf("\n");
-	    		while(getchar()!='\n');
-	    		insert(tree, i);
+	    			printf("\nNumber to add => ");
+	    			scanf("%d", &i);
+	    			printf("\n");
+	    			while(getchar()!='\n');
+	    			insert(tree, i);
 	        	break;
 	    	case 2:
-	    		printf("\nNumber to add => ");
-	    		scanf("%d", &i);
-	    		printf("\n");
-	    		while(getchar()!='\n');
-	    		insertDebug(tree, i);
+	    			printf("\nNumber to add => ");
+	    			scanf("%d", &i);
+	    			printf("\n");
+	    			while(getchar()!='\n');
+	    			insertDebug(tree, i);
 	    		break;
 	    	case 3:debug(tree);
 	    		break;
@@ -55,7 +55,7 @@ int main(void){
 	    		    printf("\n");
 	    		    while(getchar()!='\n');
 	    		    delete(tree, i);
-	    		    break;
+			  break;
 	        case 0:
 	        	break;
 	        default:
@@ -63,7 +63,5 @@ int main(void){
 	        }
 	        i++;
 	    }while (op != 0);
-	return 1;
-
 	return 1;
 }

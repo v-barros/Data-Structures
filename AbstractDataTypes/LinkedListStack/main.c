@@ -11,7 +11,7 @@
 int main(void){
 	Stack *stack = newStack();
 	int op,i=1;
-	int * ptr = (int*) malloc(sizeof(int));
+	int * ptr;
 
 	do {
 		printf("\n\nTesting List\n");

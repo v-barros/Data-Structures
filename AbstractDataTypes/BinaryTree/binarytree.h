@@ -2,7 +2,7 @@
  * binarytree.h
  *
  *  Created on: 2021-04-26
- *      Author: vinicius.barros
+ *      Author: @v-barros
  */
 #ifndef BINARYTREE_H_
 #define BINARYTREE_H_
