@@ -4,11 +4,10 @@
  *  Created on: 2021-05-11
  *      Author: @v-barros
  */
-
-
 #include "hashtable.h"
 #include <stdio.h>
 #include <stdlib.h>
+
 int main(void){
 	Table * table = createTable();
 	int op,i=1,n;

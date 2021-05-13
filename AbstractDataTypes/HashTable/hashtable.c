@@ -35,7 +35,24 @@ Node* createNode(const char * key, const char * value, unsigned long hash){
 	return n;
 }
 
-Node* getNode(Table * table,unsigned long hash);
+Node* checkKey(Node * node ,unsigned const char * key, unsigned long fullHash){
+	
+	if(node==NULL)
+		return NULL;
+	do{
+		if(!(node->hash^fullHash)){
+			/*	It is kind of redundant, but considering there might be hundreds of nodes 
+			*	in a single position on table and comparison using integers is faster than using strings, 
+			*   with this aproach we can compare only a few strings even on worst case scenario.
+			*	On the other hand, its slower in cases where the bucket is not so populated.
+			*/
+			if(!(strcmp(node->key,key)))
+				return node;
+		}
+		node=node->next;
+	}while(node!=NULL);
+	return NULL;
+}
 
 /* DJB2*/
 unsigned long hashGenerate(unsigned const char * str){
@@ -57,39 +74,48 @@ const char * getValue(Table * table,const char * key){
 	unsigned long fullHash = hashGenerate(key);
 	uint32_t i = hashValidate(fullHash);
 	Node * node = *(table->table+i);
-	if(node==NULL)
+	Node * checkNode = checkKey(node,key,fullHash);
+	
+	if(checkNode==NULL)
 		return "";
-	do{
-		if(!strcmp(node->key,key)){
-			return node->value;
-		}
-		node=node->next;
-	}while(node!=NULL);
-	return "";
+	return node->value;
 }
 
 const char * put(Table * table,const char * key, const char * value){
 	unsigned long fullHash = hashGenerate(key);
 	uint32_t i = hashValidate(fullHash);
 	Node * node = *(table->table+i);
-	char * k_ptr =(char*) malloc(sizeof(key));
+	Node * newNode = checkKey(node,key,fullHash);
+
+	/**
+	 * Alloc only value, because key might exist
+	*/
 	char * v_ptr =(char*) malloc(sizeof(value));
-	strcpy(k_ptr,key);
 	strcpy(v_ptr,value);
 
-	Node * newNode = (Node*)createNode(k_ptr, v_ptr, fullHash);
-
-	if(node==NULL){
-		*(table->table+i)=newNode;
-		return v_ptr;
-	}else{
-		while(node->next){
-			node=node->next;
+	/*If the newNode is NULL, we create a new structure to allocate key and value */
+	if(newNode==NULL){
+		char * k_ptr =(char*) malloc(sizeof(key));
+		strcpy(k_ptr,key);
+		
+		newNode = (Node*)createNode(k_ptr, v_ptr, fullHash);
+		if(node==NULL){
+			*(table->table+i)=newNode;
+		}else{
+			/**
+			 * This is O(n*2), need to improve 
+			 */
+			while(node->next){
+				node=node->next;
+			}
+			node->next=newNode;
 		}
-		node->next=newNode;
-		return v_ptr;
+	}else{
+		free((char*)newNode->value);
+		newNode->value=v_ptr;	
 	}
-	return "";
+	return v_ptr;
+
 }
 
 int containsKey(Table * table,const char * key);

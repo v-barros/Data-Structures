@@ -28,10 +28,12 @@ typedef struct Table Table;
 Table * createTable();
 
 Node* createNode(const char * key, const char * value, unsigned long hash);
+/*
+* Checks wheter a key exists or not on the table, if it does, then returns node on linked list, else, returns NULL. 
+*/
+Node* checkKey(Node * node,unsigned const char * key, unsigned long fullHash);
 
-Node* getNode(Table * table,unsigned long hash);
-
-unsigned long hashGenerate(unsigned const char *);
+unsigned long hashGenerate(unsigned const char * str);
 
 uint32_t hashValidate(unsigned long fullHash);
 

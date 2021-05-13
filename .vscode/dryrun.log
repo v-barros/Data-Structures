@@ -1,0 +1,5 @@
+make.exe -f "C:\Users\vinicius.barros\Documents\estudos\Nova pasta\Data-Structures\AbstractDataTypes\HashTable\makefile" --dry-run --keep-going --print-directory
+make.exe: Entering directory 'c:/Users/vinicius.barros/Documents/estudos/Nova pasta/Data-Structures'
+gcc -std=c11 -Wall -o main  
+make.exe: Leaving directory 'c:/Users/vinicius.barros/Documents/estudos/Nova pasta/Data-Structures'
+ 
