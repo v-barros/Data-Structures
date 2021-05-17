@@ -10,17 +10,18 @@
 
 int main(void){
 	Table * table = createTable();
-	int op,i=1,n;
-	int *p = &n;
-	//char * key,value;
+	int op,i=1;
+	
+	
 	char key[20],value[20];
 	do {
 		printf("\n\nTesting Hash Table\n");
 		printf("<1> Put \n");
 		printf("<2> Get \n");
-		printf("<3> \n");
-		printf("<4>  \n");
-		printf("<0> \n");
+		printf("<3> Contains Key\n");
+		printf("<4> Contains Value\n");
+		printf("<5> Remove using key\n");
+		printf("<0> Exit\n");
 		printf("Option => ");
 		scanf("%d", &op);
 		printf("\n");
@@ -33,19 +34,34 @@ int main(void){
 				printf("Enter value\n=>");
 				scanf ( "%[^\n]", value);
 				while(getchar()!='\n');
-
-				printf("%s\n",put(table, key, value));
+				printf("=>%s\n",put(table, key, value));
 				break;
 			case 2:
 				printf("Enter key\n=>");
 				scanf ( "%[^\n]", key);
-				//printf("%s %s",key,value);
 				while(getchar()!='\n');
 				printf("=>%s",getValue(table, key));
 				break;
 			case 3:
+				printf("Enter key\n=>");
+				scanf ( "%[^\n]", key);
+				while(getchar()!='\n');
+				printf("=>%d",containsKey(table, key));
 				break;
 			case 4:
+				printf("Enter value\n=>");
+				scanf ( "%[^\n]", value);
+				while(getchar()!='\n');
+				printf("=>%d",containsValue(table, value));
+				break;
+			case 5:
+				printf("Enter key\n=>");
+				scanf ( "%[^\n]", key);
+				while(getchar()!='\n');
+				printf("=>%d",removeByKey(table, key));
+				break;
+			case 6:
+				debugTable(table);
 				break;
 			case 0:
 				break;

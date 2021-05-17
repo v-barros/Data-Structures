@@ -222,7 +222,6 @@ void printTreePostorderI(Tree * tree){
 				if(i%ITEMS_PER_LINE==ITEMS_PER_LINE-1)
 					printf("\n");
 				i++;
-				free(node);
 			}
 		}else if(node->rightChild!=NULL){
 			push(stack,node->rightChild);
