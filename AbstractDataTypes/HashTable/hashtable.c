@@ -7,22 +7,30 @@
  * Simplified implementation of hashtable, based on pydict: https://github.com/python/cpython/blob/main/Objects/dictobject.c,
  * hostpot openjdk symbol table: http://hg.openjdk.java.net/jdk8/jdk8/hotspot/file/87ee5ee27509/src/share/vm/classfile/symbolTable.hpp
  * and java HashMap: https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html
- *  
  * 
  */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "hashtable.h"
 #include <string.h>
+#include "hashtable.h"
+
 
 /**
  * Must receive the first node of a bucket in table->table array.
  * If node is NULL, return NULL.
- * Checks wheter a key exists or not on a bucket, if it does, then returns the previous node on linked list,
+ * Checks wheter a key exists or not on a bucket, if it does, then returns the previous node on the bucket,
  * else, returns the last node found on the bucket.
  * */
-Node* lookupAndGetPrevious(Node * node, const char * key, unsigned long fullHash);//need to improve this
+Node* lookupAndGetPrevious(Node * node, const char * key, unsigned long fullHash);
+
+/**
+ * Must receive the first node of a bucket in table->table array.
+ * If node is NULL, return NULL.
+ * Checks wheter a key exists or not on a bucket, if it does, then returns the node that holds the key,
+ * else, NULL.
+ * */
+Node* lookup(Node * node, const char * key, unsigned long fullHash);
 
 /* DJB2. See: https://theartincode.stanis.me/008-djb2/ */
 unsigned long hashGenerate(const char * str);
@@ -38,7 +46,7 @@ Table * createTable(){
 	if(t!=NULL){
 		t->tableSize = TABLE_SIZE;
 		t->numberOfEntries=0;
-		memset(t->table, 0, (t->tableSize)* sizeof(void*) );
+		memset(t->table, 0, (t->tableSize)* sizeof(void*) );	
 	}
 	return t;
 }
@@ -79,6 +87,27 @@ Node* lookupAndGetPrevious(Node * node, const char * key, unsigned long fullHash
 	return previous;
 }
 
+Node* lookup(Node * node, const char * key, unsigned long fullHash){	
+	if(node==NULL)
+		return NULL;
+	
+	do{
+		if(!(node->hash^fullHash)){
+			/*
+			*	It is kind of redundant, but considering there might be hundreds of nodes 
+			*	in a single position on table and comparison using integers is faster than using strings, 
+			*   with this aproach we can compare only a few strings even on worst case scenario.
+			*/
+			if(!(strcmp(node->key,key)))
+				return node;
+		}
+		node=node->next;
+	}while(node!=NULL);
+	
+	/* reached end of bucket*/
+	return NULL;
+}
+
 unsigned long hashGenerate(const char * str){
 	unsigned long hash = 5381;
 	int8_t c;
@@ -100,13 +129,12 @@ const char * getValue(Table * table,const char * key){
 	unsigned long fullHash = hashGenerate(key);
 	uint32_t i = hashValidate(fullHash);
 	Node * node = *(table->table+i);
-	Node * checkNode = lookupAndGetPrevious(node,key,fullHash);
+	Node * checkNode = lookup(node,key,fullHash);
 	
 	if(checkNode==NULL)/*There is no such key on the table */
 		return "";
-	if(!strcmp(checkNode->key,key))/*The node with thekey  first on table->table[i]*/
-		return checkNode->value;
-	return checkNode->next->value;
+
+	return checkNode->value;
 }
 
 const char * put(Table * table,const char * key, const char * value){
@@ -116,7 +144,6 @@ const char * put(Table * table,const char * key, const char * value){
 	Node * newNode;
 
 	node = lookupAndGetPrevious(node,key,fullHash);
-	
 	
 	/**
 	 * Alloc only value, because key might exist
@@ -164,24 +191,11 @@ int containsKey(Table * table,const char * key){
 	unsigned long fullHash = hashGenerate(key);
 	uint32_t i = hashValidate(fullHash);
 	Node * node = *(table->table+i);
-	node = lookupAndGetPrevious(node,key,fullHash);
+	node = lookup(node,key,fullHash);
 	
 	if(node==NULL)
 		return 0;
-	
-	/**
-	 * 	3 possibilities here, ->
-	 *  1: key is at the first node of the bucket(table->table[i]);
-	 *  2: key is anywhere but the first node(node->next);
-	 *  3: there is no such key 
-	 * */
-	if(!strcmp(key,node->key)){/* case 1*/
-		return 1;
-	}else if(node->next == NULL){/* case 3*/	
-		return 0;
-	}else{ /* case 2*/
-		return 1;
-	}
+	return 1;
 }
 
 int containsValue(Table * table,const char * value){
@@ -214,6 +228,8 @@ int numberOfEntries(Table * table){
 }
 
 int removeByKey(Table * table,const char * key){
+	if(table->numberOfEntries<=0) return 0;
+
 	unsigned long fullHash = hashGenerate(key);
 	uint32_t i = hashValidate(fullHash);
 	Node * nodeToDelete = *(table->table+i);
@@ -233,6 +249,12 @@ int removeByKey(Table * table,const char * key){
 	}else if(checkNode->next == NULL){/* case 3*/	
 		return 0;
 	}else{ /* case 2*/
+		/**
+		 *  change value of 'next' on previous node,
+		 * 	ex: given nodeABC->nodeFOO->nodeBAR
+		 *  make nodeABC point to nodeBAR 
+		 *  and nodeToDelete is left to be deleted
+		 * */
 		nodeToDelete = checkNode->next;
 		checkNode->next=nodeToDelete->next;
 	}

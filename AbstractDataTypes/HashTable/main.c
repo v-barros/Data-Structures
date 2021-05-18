@@ -10,10 +10,9 @@
 
 int main(void){
 	Table * table = createTable();
-	int op,i=1;
-	
-	
+	int op;	
 	char key[20],value[20];
+
 	do {
 		printf("\n\nTesting Hash Table\n");
 		printf("<1> Put \n");
@@ -68,7 +67,6 @@ int main(void){
 			default:
 	            	printf("\nError: invalid input!\n");
 	        }
-	        i++;
 	    }while (op != 0);
 
 	return 0;

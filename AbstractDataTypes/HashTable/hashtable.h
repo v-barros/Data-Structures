@@ -39,8 +39,8 @@ const char * getValue(Table * table,const char * key);
 /**
  * Given a key and a value, try to insert a new structure on the table
  * If the key already exists, places the new value on the present structure 
- * If it doesnt, creates a new structure to inset key and value
- * Returns the (new or not) value
+ * If it doesnt, creates a new structure to insert key and value
+ * Returns the (updated) value passed to the key
  * */
 const char * put(Table * table,const char * key, const char * value);
 
@@ -58,7 +58,7 @@ int containsValue(Table * table,const char * value);
 
 /**
  * Remove a key on the table
- * If key exists on table, return 1, else, return 0
+ * return 1 if removed sucessfuly, else, return 0 
  * */
 int removeByKey(Table * table,const char * key);
 
