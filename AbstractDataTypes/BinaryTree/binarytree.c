@@ -212,7 +212,8 @@ void printTreePostorderI(Tree * tree){
 				break;
 			}
 			node = (Node *)pop(stack);
-			if(node->rightChild == (Node*)peek(stack)){
+			if(node->rightChild !=NULL
+			&& node->rightChild == (Node*)peek(stack)){
 				Node *aux =(Node*) pop(stack);
 				push(stack,node);
 				push(stack,aux);
