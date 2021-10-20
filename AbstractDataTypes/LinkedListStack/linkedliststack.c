@@ -35,7 +35,7 @@ StackNode * newNodeS(void * n){
 
 void * pop(Stack * stack){
 	if(isEmptyS(stack))
-		return INT_MIN;
+		return NULL;
 
 	StackNode * node = stack->head;
 	void * n = stack->head->value;
@@ -86,7 +86,7 @@ void printStack(Stack * stack){
 	/*
 	 * I'm assuming I'm only pushing int variables into stack, because there is no trivial way to check what type of data a void pointer is pointing to;
 	 */
-	printf("\nList:\nSize:[%d] Head:[%d] and %d\n",stack->size,*(int*)stack->head->value);
+	printf("\nList:\nSize:[%d] Head:[%d]\n",stack->size,*(int*)(stack->head->value));
 
 	while(node!=NULL){
 		printf("%03d ",*(int*)node->value);
