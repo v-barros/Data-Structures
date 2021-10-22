@@ -10,22 +10,18 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "../LinkedListStack/linkedliststack.h"
+#define max(x,y) x>y?x:y
 
-void basicAdd(Tree * tree, Node * nodeToAdd);
+Stack * basicAdd(Tree * tree, Node * nodeToAdd);
 
 Node * new_node(int n);
 
-void countHeight(Node *node);
+int check_balanceFactor(Stack * stack);
 
 int get_height(Node *node);
 
 void set_height(Node *node);
 
-int max (int x, int y);
-
-int max (int x, int y){
-	return x>y?x:y;
-}
 int get_height(Node *node){
 	if(node)
 		return node->height;
@@ -37,61 +33,50 @@ void set_height(Node *node){
 	node->height = max(get_height(node->rightChild),get_height(node->leftChild)) +1;
 }
 
-void countHeight(Node * node){
-	Stack * stack = newStack();
-	push(stack,node);
-
-	while(1){
-		node =(Node *)pop(stack);
-		if(node==NULL){
-			if(isEmptyS(stack)){
-				break;
-			}
-			node = (Node *)pop(stack);
-			if(node->rightChild !=NULL
-			&& node->rightChild == (Node*)peek(stack)){
-				Node *aux =(Node*) pop(stack);
-				push(stack,node);
-				push(stack,aux);
-			}else{
-				set_height(node);
-				push(stack,NULL);//this looks weird, but it works properly
-			}
-		}else if(node->rightChild!=NULL){
-			push(stack,node->rightChild);
-			push(stack,node);
-			push(stack,node->leftChild);
-		}else{
-			push(stack,node);
-			push(stack,node->leftChild);
+int check_balanceFactor(Stack * stack){
+	assert(stack);
+	int aux;
+	Node * node;
+	while(!isEmptyS(stack)){
+		node = pop(stack);
+		aux = get_height(node);
+		set_height(node);
+		printf("changing height of %d\n", node->value);
+		if(aux == get_height(node)){
+			printf("breaking on %d\n\n",node->value);
+			return 1;//nothing else to check
 		}
 	}
-	free(stack);
+	return 0;
 }
 
-void basicAdd(Tree * tree, Node * nodeToAdd){
+Stack * basicAdd(Tree * tree, Node * nodeToAdd){
+	Stack * stack = newStack();
+	Node * aux;
     int n;
     if(isEmptyT(tree)){
 		tree->root = nodeToAdd;
+		return NULL;
 	}else{
 		Node * node = tree->root;
-        do{
+        while(1){
+			push(stack,node);
             if(nodeToAdd->value > node->value){//right
                 if(node->rightChild == NULL){
                     node->rightChild = nodeToAdd;
-                    n=1;
+                    return stack;
                 }else{
                     node = node->rightChild;
                 }
             }else{//left
                 if(node->leftChild == NULL){
                     node->leftChild = nodeToAdd;
-                    n=1;
+                    return stack;
                 }else{
                     node = node->leftChild;
                 }
             }
-        }while(n!=1);
+        }
     }
 }
 
@@ -101,6 +86,7 @@ Node * new_node(int n){
     newnode->value = n;
     newnode->leftChild = NULL;
     newnode->rightChild = NULL;
+	newnode->height=0;
 
 	return newnode;
 }
@@ -117,12 +103,13 @@ Tree * newTree(){
 
 int insert(Tree * tree, int numToAdd){
 	Node * newNode = new_node(numToAdd);
-    int i;
-    basicAdd(tree,newNode);
+    Stack * navStack = basicAdd(tree,newNode);
 	
 	tree->size++;
-	
-   	countHeight(tree->root);
+	if(navStack){
+   		check_balanceFactor(navStack);
+		free(navStack);
+	}
 	return newNode->value;
 }
 
@@ -165,12 +152,10 @@ void debug(Tree * tree){
 			printf("\nThe node with value [%03d] has height %d and points to %p on the left and %p on the right\n",node->value,node->height,node->leftChild,node->rightChild);
 			push(stack,node->rightChild);
 		}
-
 	}
 	printf("\n");
 	free(stack);
 }
-
 
 /* Insert and print the address of the new node*/
 int insertDebug(Tree *, int );
