@@ -10,8 +10,16 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "../LinkedListStack/linkedliststack.h"
-#define max(x,y) x>y?x:y
 
+/* Given the tree and the node to be inserted, navigates the tree and add the node.
+   Returns a stack containg the path to the new node, example:
+				10
+			   / \
+			  5   15
+   If basicAdd() was called with the tree above and a node containing the value 3,
+   the node would be added on the left of '5' and the returned stack would look like this: [10,5].
+   If the tree is empty, then the node is set as root and the return value is NULL.
+*/
 Stack * basicAdd(Tree * tree, Node * nodeToAdd);
 
 Node * new_node(int n);
@@ -21,6 +29,12 @@ int check_balanceFactor(Stack * stack);
 int get_height(Node *node);
 
 void set_height(Node *node);
+
+int max(int x,int y);
+
+int max(int x,int y){
+	return x>y?x:y;
+}
 
 int get_height(Node *node){
 	if(node)
@@ -40,8 +54,9 @@ int check_balanceFactor(Stack * stack){
 	while(!isEmptyS(stack)){
 		node = pop(stack);
 		aux = get_height(node);
+		printf("changing height of %d, from %d to ", node->value, aux);
 		set_height(node);
-		printf("changing height of %d\n", node->value);
+		printf("%d\n", get_height(node));
 		if(aux == get_height(node)){
 			printf("breaking on %d\n\n",node->value);
 			return 1;//nothing else to check
