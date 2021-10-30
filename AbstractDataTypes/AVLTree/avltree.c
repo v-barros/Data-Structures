@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "../LinkedListStack/linkedliststack.h"
+#define BALANCE_FACTOR 1
 
 /* Given the tree and the node to be inserted, navigates the tree and add the node.
    Returns a stack containg the path to the new node, example:
@@ -31,6 +32,8 @@ int get_height(Node *node);
 void set_height(Node *node);
 
 int max(int x,int y);
+
+void right_rotation(Node * father,Node* son, Node * grandfather);
 
 int max(int x,int y){
 	return x>y?x:y;
@@ -57,7 +60,21 @@ int check_balanceFactor(Stack * stack){
 		printf("changing height of %d, from %d to ", node->value, aux);
 		set_height(node);
 		printf("%d\n", get_height(node));
-		if(aux == get_height(node)){
+		if(aux != get_height(node)){//balance factor need to be checked here
+			if(abs(get_height(node->leftChild) - get_height(node->rightChild)) > BALANCE_FACTOR){ // unbalanced
+				printf("unbalanced on node %d, balance factor: %d\n", node->value,get_height(node->leftChild) - (get_height(node->rightChild)));
+				if(get_height(node->leftChild)-get_height(node->rightChild)>0){ //left heavy
+					printf("left heavy\n");
+					Node * temp_aux = pop(stack);
+					right_rotation(node,node->leftChild,temp_aux);	// not working if the unbalanced node is the root		
+					set_height(node);
+				}else{//right heavy
+					printf("right heavy\n");
+				}
+				return 0;
+			}
+		}
+		else{
 			printf("breaking on %d\n\n",node->value);
 			return 1;//nothing else to check
 		}
@@ -65,6 +82,11 @@ int check_balanceFactor(Stack * stack){
 	return 0;
 }
 
+void right_rotation(Node * father,Node* son, Node * grandfather){
+	if(grandfather) grandfather->leftChild = son;
+	father->leftChild = son->rightChild;
+	son->rightChild = father;
+}
 Stack * basicAdd(Tree * tree, Node * nodeToAdd){
 	Stack * stack = newStack();
 	Node * aux;
