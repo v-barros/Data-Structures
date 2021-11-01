@@ -18,14 +18,30 @@
 			   / \
 			  5   15
    If basicAdd() was called with the tree above and a node containing the value 3,
-   the node would be added on the left of '5' and the returned stack would look like this: [10,5].
+   the node would be added on the left of '5' and the returned stack would look 
+   like this: [10,5].
    If the tree is empty, then the node is set as root and the return value is NULL.
 */
 Stack * basicAdd(Tree * tree, Node * nodeToAdd);
 
 Node * new_node(int n);
-
-int check_balanceFactor(Stack * stack);
+/*
+	Given a Stack, checks whether there is an unbalanced node and return 0 if there
+	is nothing unbalanced or 1 if there is an unbalanced node, example:
+					10
+				   	/ \
+				   9   11
+				  /
+			     8
+	If we insert a node with value 5 on the tree above, then the stack passed to
+	is_unbalanced() will look like this: [10,9,8] and the node 9 would be
+	unbalanced, so the return value is 1 and the head of the stack is now the
+	unbalanced node, which is 9, so the stack look like this:	
+	[10,9].
+	If the unbalanced node is the root of the tree, then the stack is empty, but
+	return value is still 1;
+*/
+int is_unbalanced(Stack * stack);
 
 int get_height(Node *node);
 
@@ -33,7 +49,9 @@ void set_height(Node *node);
 
 int max(int x,int y);
 
-void right_rotation(Node * father,Node* son, Node * grandfather);
+void right_rotation(Node * father,Node* son);
+
+void left_rotation(Node * father,Node* son);
 
 int max(int x,int y){
 	return x>y?x:y;
@@ -50,7 +68,7 @@ void set_height(Node *node){
 	node->height = max(get_height(node->rightChild),get_height(node->leftChild)) +1;
 }
 
-int check_balanceFactor(Stack * stack){
+int is_unbalanced(Stack * stack){
 	assert(stack);
 	int aux;
 	Node * node;
@@ -63,30 +81,28 @@ int check_balanceFactor(Stack * stack){
 		if(aux != get_height(node)){//balance factor need to be checked here
 			if(abs(get_height(node->leftChild) - get_height(node->rightChild)) > BALANCE_FACTOR){ // unbalanced
 				printf("unbalanced on node %d, balance factor: %d\n", node->value,get_height(node->leftChild) - (get_height(node->rightChild)));
-				if(get_height(node->leftChild)-get_height(node->rightChild)>0){ //left heavy
-					printf("left heavy\n");
-					Node * temp_aux = pop(stack);
-					right_rotation(node,node->leftChild,temp_aux);	// not working if the unbalanced node is the root		
-					set_height(node);
-				}else{//right heavy
-					printf("right heavy\n");
-				}
-				return 0;
+				push(stack,node);
+				return 1;
 			}
 		}
 		else{
 			printf("breaking on %d\n\n",node->value);
-			return 1;//nothing else to check
+			return 0;//nothing else to check
 		}
 	}
 	return 0;
 }
 
-void right_rotation(Node * father,Node* son, Node * grandfather){
-	if(grandfather) grandfather->leftChild = son;
+void right_rotation(Node * father,Node* son){
 	father->leftChild = son->rightChild;
 	son->rightChild = father;
 }
+
+void left_rotation(Node * father,Node* son){
+	father->rightChild = son->leftChild;
+	son->leftChild = father;
+}
+
 Stack * basicAdd(Tree * tree, Node * nodeToAdd){
 	Stack * stack = newStack();
 	Node * aux;
@@ -144,10 +160,39 @@ int insert(Tree * tree, int numToAdd){
 	
 	tree->size++;
 	if(navStack){
-   		check_balanceFactor(navStack);
+   		if(is_unbalanced(navStack)){
+			Node * temp = pop(navStack);
+			if(get_height(temp->leftChild)-(get_height(temp->rightChild))>0){//left heavy
+				Node * temp_left = temp->leftChild;
+				right_rotation(temp,temp_left);
+				temp = pop(navStack);
+				if(temp){//not root
+					if(temp->leftChild ==temp_left->rightChild) // moving the parent of the unbalanced subtree to the new root of the subtree, which is temp_left
+						temp->leftChild = temp_left;
+					else
+						temp->rightChild = temp_left;
+				}else{ //root was unbalanced
+					tree->root = temp_left;
+				}
+
+			}else{ //right heavy
+				Node * temp_right = temp->rightChild;
+				left_rotation(temp,temp_right);
+				temp = pop(navStack);
+				if(temp){//not root
+					if(temp->rightChild ==temp_right->leftChild)// moving the parent of the unbalanced subtree to the new root of the subtree, which is temp_right
+						temp->rightChild = temp_right;
+					else
+						temp->leftChild = temp_right;
+				}else{ //root was unbalanced
+					tree->root = temp_right;
+				}
+			}	
+		}			
 		free(navStack);
 	}
 	return newNode->value;
+
 }
 
 int delete(Tree *, int);
