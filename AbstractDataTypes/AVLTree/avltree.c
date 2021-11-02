@@ -37,9 +37,7 @@ Node * new_node(int n);
 	is_unbalanced() will look like this: [10,9,8] and the node 9 would be
 	unbalanced, so the return value is 1 and the head of the stack is now the
 	unbalanced node, which is 9, so the stack look like this:	
-	[10,9].
-	If the unbalanced node is the root of the tree, then the stack is empty, but
-	return value is still 1;
+	[10,9]
 */
 int is_unbalanced(Stack * stack);
 
@@ -162,32 +160,26 @@ int insert(Tree * tree, int numToAdd){
 	if(navStack){
    		if(is_unbalanced(navStack)){
 			Node * temp = pop(navStack);
+			Node * temp_child;
 			if(get_height(temp->leftChild)-(get_height(temp->rightChild))>0){//left heavy
-				Node * temp_left = temp->leftChild;
-				right_rotation(temp,temp_left);
-				temp = pop(navStack);
-				if(temp){//not root
-					if(temp->leftChild ==temp_left->rightChild) // moving the parent of the unbalanced subtree to the new root of the subtree, which is temp_left
-						temp->leftChild = temp_left;
-					else
-						temp->rightChild = temp_left;
-				}else{ //root was unbalanced
-					tree->root = temp_left;
-				}
-
+				temp_child = temp->leftChild;
+				right_rotation(temp,temp_child);
 			}else{ //right heavy
-				Node * temp_right = temp->rightChild;
-				left_rotation(temp,temp_right);
-				temp = pop(navStack);
-				if(temp){//not root
-					if(temp->rightChild ==temp_right->leftChild)// moving the parent of the unbalanced subtree to the new root of the subtree, which is temp_right
-						temp->rightChild = temp_right;
-					else
-						temp->leftChild = temp_right;
-				}else{ //root was unbalanced
-					tree->root = temp_right;
-				}
+				temp_child = temp->rightChild;
+				left_rotation(temp,temp_child);				
 			}	
+			set_height(temp);
+			
+			temp = pop(navStack);
+			// parent of the unbalanced subtree must point to the new root of the subtree, which is temp_child
+			if(temp){//parent is not tree root
+				if(temp->rightChild ==temp_child->leftChild)
+					temp->rightChild = temp_child;
+				else
+					temp->leftChild = temp_child;
+			}else{ //root was unbalanced
+				tree->root = temp_child;
+			}
 		}			
 		free(navStack);
 	}
