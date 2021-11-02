@@ -44,13 +44,5 @@ void debug(Tree * );
 /* Insert and print the address of the new node*/
 int insertDebug(Tree *, int );
 
-void rightRotate(Node *);
-
-void leftRotate(Node *);
-
-void leftRightRotate(Node *);
-
-void rightLeftRotate(Node *);
-
 
 #endif /* AVLTREE_H_ */

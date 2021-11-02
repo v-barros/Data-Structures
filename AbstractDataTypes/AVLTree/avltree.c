@@ -51,6 +51,8 @@ void right_rotation(Node * father,Node* son);
 
 void left_rotation(Node * father,Node* son);
 
+void adjust_height(Tree * tree, Stack * navStack);
+
 int max(int x,int y){
 	return x>y?x:y;
 }
@@ -107,6 +109,7 @@ Stack * basicAdd(Tree * tree, Node * nodeToAdd){
     int n;
     if(isEmptyT(tree)){
 		tree->root = nodeToAdd;
+		free(stack);
 		return NULL;
 	}else{
 		Node * node = tree->root;
@@ -155,37 +158,40 @@ Tree * newTree(){
 int insert(Tree * tree, int numToAdd){
 	Node * newNode = new_node(numToAdd);
     Stack * navStack = basicAdd(tree,newNode);
-	
 	tree->size++;
+
 	if(navStack){
-   		if(is_unbalanced(navStack)){
-			Node * temp = pop(navStack);
-			Node * temp_child;
-			if(get_height(temp->leftChild)-(get_height(temp->rightChild))>0){//left heavy
-				temp_child = temp->leftChild;
-				right_rotation(temp,temp_child);
-			}else{ //right heavy
-				temp_child = temp->rightChild;
-				left_rotation(temp,temp_child);				
-			}	
-			set_height(temp);
-			
-			temp = pop(navStack);
-			// parent of the unbalanced subtree must point to the new root of the subtree, which is temp_child
-			if(temp){//parent is not tree root
-				if(temp->rightChild ==temp_child->leftChild)
-					temp->rightChild = temp_child;
-				else
-					temp->leftChild = temp_child;
-			}else{ //root was unbalanced
-				tree->root = temp_child;
-			}
-		}			
+   		if(is_unbalanced(navStack))	
+			adjust_height(tree,navStack);
 		free(navStack);
 	}
 	return newNode->value;
 
 }
+
+void adjust_height(Tree * tree, Stack * navStack){
+	Node * temp = pop(navStack);
+	Node * temp_child;
+	if(get_height(temp->leftChild)-(get_height(temp->rightChild))>0){//left heavy
+		temp_child = temp->leftChild;
+		right_rotation(temp,temp_child);
+	}else{ //right heavy
+		temp_child = temp->rightChild;
+		left_rotation(temp,temp_child);				
+	}	
+	set_height(temp);
+	
+	temp = pop(navStack);
+	// parent of the unbalanced subtree must point to the new root of the subtree, which is temp_child
+	if(temp){//parent is not tree root
+		if(temp->rightChild ==temp_child->leftChild)
+			temp->rightChild = temp_child;
+		else
+			temp->leftChild = temp_child;
+	}else{ //root was unbalanced
+		tree->root = temp_child;
+	}
+}	
 
 int delete(Tree *, int);
 
@@ -234,10 +240,3 @@ void debug(Tree * tree){
 /* Insert and print the address of the new node*/
 int insertDebug(Tree *, int );
 
-void rightRotate(Node *);
-
-void leftRotate(Node *);
-
-void leftRightRotate(Node *);
-
-void rightLeftRotate(Node *);
