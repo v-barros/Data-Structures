@@ -47,9 +47,9 @@ void set_height(Node *node);
 
 int max(int x,int y);
 
-void right_rotation(Node * father,Node* son);
+Node * right_rotation(Node * father,Node* son);
 
-void left_rotation(Node * father,Node* son);
+Node * left_rotation(Node * father,Node* son);
 
 void adjust_height(Tree * tree, Stack * navStack);
 
@@ -93,18 +93,21 @@ int is_unbalanced(Stack * stack){
 	return 0;
 }
 
-void right_rotation(Node * father,Node* son){
+Node * right_rotation(Node * father,Node* son){
 	father->leftChild = son->rightChild;
 	son->rightChild = father;
+	return son;
 }
 
-void left_rotation(Node * father,Node* son){
+Node * left_rotation(Node * father,Node* son){
 	father->rightChild = son->leftChild;
 	son->leftChild = father;
+	return son;
 }
 
 Stack * basicAdd(Tree * tree, Node * nodeToAdd){
 	Stack * stack = newStack();
+	assert(stack!=NULL);
 	Node * aux;
     int n;
     if(isEmptyT(tree)){
@@ -166,22 +169,35 @@ int insert(Tree * tree, int numToAdd){
 		free(navStack);
 	}
 	return newNode->value;
-
 }
 
 void adjust_height(Tree * tree, Stack * navStack){
 	Node * temp = pop(navStack);
 	Node * temp_child;
 	if(get_height(temp->leftChild)-(get_height(temp->rightChild))>0){//left heavy
+		
 		temp_child = temp->leftChild;
-		right_rotation(temp,temp_child);
+		if(get_height(temp_child->leftChild) - (get_height(temp_child->rightChild))<0 ){//left-right heavy
+			temp->leftChild = left_rotation(temp_child,temp_child->rightChild);
+			set_height(temp_child);
+			temp_child = right_rotation(temp,temp->leftChild);
+		}else{
+			right_rotation(temp,temp_child);
+		}
 	}else{ //right heavy
 		temp_child = temp->rightChild;
-		left_rotation(temp,temp_child);				
+		if(get_height(temp_child->leftChild) - (get_height(temp_child->rightChild))>0 ){//righ-left heavy
+			temp->rightChild = right_rotation(temp_child,temp_child->leftChild);
+			set_height(temp_child);
+			temp_child = left_rotation(temp,temp->rightChild);
+		}else{
+			left_rotation(temp,temp_child);
+		}
 	}	
 	set_height(temp);
-	
+	set_height(temp_child);
 	temp = pop(navStack);
+
 	// parent of the unbalanced subtree must point to the new root of the subtree, which is temp_child
 	if(temp){//parent is not tree root
 		if(temp->rightChild ==temp_child->leftChild)
