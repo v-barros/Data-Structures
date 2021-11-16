@@ -41,8 +41,13 @@ Node * new_node(int n);
 */
 int is_unbalanced(Stack * stack);
 
+/*
+	Return node height or -1 if node is NULL.
+*/
 int get_height(Node *node);
-
+/*
+	set height of node, using the higher subtree child + 1;
+*/
 void set_height(Node *node);
 
 int max(int x,int y);
@@ -68,6 +73,17 @@ void set_height(Node *node){
 	node->height = max(get_height(node->rightChild),get_height(node->leftChild)) +1;
 }
 
+Node * new_node(int n){
+	Node * newnode = (Node*) malloc (sizeof(Node));
+    assert(newnode!=NULL);
+    newnode->value = n;
+    newnode->leftChild = NULL;
+    newnode->rightChild = NULL;
+	newnode->height=0;
+
+	return newnode;
+}
+
 int is_unbalanced(Stack * stack){
 	assert(stack);
 	int aux;
@@ -78,16 +94,11 @@ int is_unbalanced(Stack * stack){
 		printf("changing height of %d, from %d to ", node->value, aux);
 		set_height(node);
 		printf("%d\n", get_height(node));
-		if(aux != get_height(node)){//balance factor need to be checked here
-			if(abs(get_height(node->leftChild) - get_height(node->rightChild)) > BALANCE_FACTOR){ // unbalanced
-				printf("unbalanced on node %d, balance factor: %d\n", node->value,get_height(node->leftChild) - (get_height(node->rightChild)));
-				push(stack,node);
-				return 1;
-			}
-		}
-		else{
-			printf("breaking on %d\n\n",node->value);
-			return 0;//nothing else to check
+	
+		if(abs(get_height(node->leftChild) - get_height(node->rightChild)) > BALANCE_FACTOR){ // unbalanced
+			printf("unbalanced on node %d, balance factor: %d\n", node->value,get_height(node->leftChild) - (get_height(node->rightChild)));
+			push(stack,node);
+			return 1;
 		}
 	}
 	return 0;
@@ -104,6 +115,48 @@ Node * left_rotation(Node * father,Node* son){
 	son->leftChild = father;
 	return son;
 }
+
+void adjust_height(Tree * tree, Stack * navStack){
+	Node * temp = pop(navStack);
+	Node * temp_child;
+	if(get_height(temp->leftChild)-(get_height(temp->rightChild))>0){//left heavy
+		
+		temp_child = temp->leftChild;
+		if(get_height(temp_child->leftChild) - (get_height(temp_child->rightChild))<0 ){//left-right heavy
+			printf("left-right rotation\n");
+			temp->leftChild = left_rotation(temp_child,temp_child->rightChild);
+			set_height(temp_child);
+			temp_child = right_rotation(temp,temp->leftChild);
+		}else{
+			printf("right rotation\n");
+			right_rotation(temp,temp_child);
+		}
+	}else{ //right heavy
+		temp_child = temp->rightChild;
+		if(get_height(temp_child->leftChild) - (get_height(temp_child->rightChild))>0 ){//righ-left heavy
+			printf("right-left rotation\n");
+			temp->rightChild = right_rotation(temp_child,temp_child->leftChild);
+			set_height(temp_child);
+			temp_child = left_rotation(temp,temp->rightChild);
+		}else{
+			printf("left rotation\n");
+			left_rotation(temp,temp_child);
+		}
+	}	
+	set_height(temp);
+	set_height(temp_child);
+	temp = pop(navStack);
+
+	// parent of the unbalanced subtree must point to the new root of the subtree, which is temp_child
+	if(temp){//parent is not tree root
+		if(temp->rightChild ==temp_child->leftChild)
+			temp->rightChild = temp_child;
+		else
+			temp->leftChild = temp_child;
+	}else{ //root was unbalanced
+		tree->root = temp_child;
+	}
+}	
 
 Stack * basicAdd(Tree * tree, Node * nodeToAdd){
 	Stack * stack = newStack();
@@ -137,17 +190,6 @@ Stack * basicAdd(Tree * tree, Node * nodeToAdd){
     }
 }
 
-Node * new_node(int n){
-	Node * newnode = (Node*) malloc (sizeof(Node));
-    assert(newnode!=NULL);
-    newnode->value = n;
-    newnode->leftChild = NULL;
-    newnode->rightChild = NULL;
-	newnode->height=0;
-
-	return newnode;
-}
-
 Tree * newTree(){
     Tree * t = (Tree *) malloc (sizeof(Tree));
     assert(t!=NULL);
@@ -171,45 +213,112 @@ int insert(Tree * tree, int numToAdd){
 	return newNode->value;
 }
 
-void adjust_height(Tree * tree, Stack * navStack){
-	Node * temp = pop(navStack);
-	Node * temp_child;
-	if(get_height(temp->leftChild)-(get_height(temp->rightChild))>0){//left heavy
-		
-		temp_child = temp->leftChild;
-		if(get_height(temp_child->leftChild) - (get_height(temp_child->rightChild))<0 ){//left-right heavy
-			temp->leftChild = left_rotation(temp_child,temp_child->rightChild);
-			set_height(temp_child);
-			temp_child = right_rotation(temp,temp->leftChild);
-		}else{
-			right_rotation(temp,temp_child);
-		}
-	}else{ //right heavy
-		temp_child = temp->rightChild;
-		if(get_height(temp_child->leftChild) - (get_height(temp_child->rightChild))>0 ){//righ-left heavy
-			temp->rightChild = right_rotation(temp_child,temp_child->leftChild);
-			set_height(temp_child);
-			temp_child = left_rotation(temp,temp->rightChild);
-		}else{
-			left_rotation(temp,temp_child);
-		}
-	}	
-	set_height(temp);
-	set_height(temp_child);
-	temp = pop(navStack);
-
-	// parent of the unbalanced subtree must point to the new root of the subtree, which is temp_child
-	if(temp){//parent is not tree root
-		if(temp->rightChild ==temp_child->leftChild)
-			temp->rightChild = temp_child;
-		else
-			temp->leftChild = temp_child;
-	}else{ //root was unbalanced
-		tree->root = temp_child;
+Node * findPreviousBiggest(Node * node){
+	node = node->leftChild;
+	Node * previous = node;
+	while(node->rightChild!=NULL){
+		previous = node;
+		node=node->rightChild;
 	}
-}	
+	return previous;
+}
 
-int delete(Tree *, int);
+void deleteExec(Tree * tree,Node * previous, Node *nodeToDelete){
+
+	if(nodeToDelete->rightChild==NULL && nodeToDelete->leftChild==NULL){
+		if(previous==NULL){
+			tree->root=NULL;
+		}else if(previous->leftChild == nodeToDelete){
+			previous->leftChild = NULL;
+		}else{
+			previous->rightChild = NULL;
+		}
+
+	}else if(nodeToDelete->leftChild == NULL){
+		if(previous==NULL){
+			tree->root = nodeToDelete->rightChild;
+		}else if(previous->leftChild == nodeToDelete){
+			previous->leftChild = nodeToDelete->rightChild;
+		}else{
+			previous->rightChild = nodeToDelete->rightChild;
+		}
+
+	}else if(nodeToDelete->rightChild == NULL){
+		if(previous==NULL){
+			tree->root = nodeToDelete->leftChild;
+		}
+		if(previous->leftChild == nodeToDelete){
+			previous->leftChild = nodeToDelete->leftChild;
+		}else{
+			previous->rightChild = nodeToDelete->leftChild;
+		}
+
+	}else{
+		Node * nodeToSwap = findPreviousBiggest(nodeToDelete); // find biggest number on nodeToDelete->leftchild subtree
+		if(nodeToSwap->rightChild!=NULL){
+			nodeToDelete->value = nodeToSwap->rightChild->value;
+			nodeToDelete = nodeToSwap->rightChild;
+			nodeToSwap->rightChild = nodeToSwap->rightChild->leftChild;
+		}else{
+			nodeToDelete->value = nodeToSwap->value;
+			nodeToDelete->leftChild =nodeToSwap->leftChild;
+			nodeToDelete = nodeToSwap;
+		}
+	}
+	free(nodeToDelete);
+}
+
+/* 	Save the path to the node containing numToFind on stack, 
+	even if not found.
+	Return 1 or 0.
+*/
+int find(Tree * tree, int numToFind, Stack * stack){
+	Node * node = tree->root;
+	do{
+		if(node==NULL) // not found
+			return 0;
+		if(numToFind == node->value){
+			return 1;
+		}
+		push(stack,node);
+		if(numToFind > node->value){//right
+			node = node->rightChild;
+		}else{//left
+			node = node->leftChild;
+		}
+	}while(1);
+}
+
+int delete(Tree * tree, int numToDelete){
+	if(isEmptyT(tree))
+		return 0;
+
+	Stack * navStack = newStack();
+
+	if(find(tree,numToDelete,navStack)){
+		Node * aux = peek(navStack);
+		if(isEmptyS(navStack)){
+			deleteExec(tree,NULL, tree->root);
+			free(navStack);
+			return 1;
+		}
+		else if(aux->leftChild->value == numToDelete){
+			deleteExec(tree,aux,aux->leftChild);
+		}
+		else{
+			deleteExec(tree,aux,aux->rightChild);
+		}
+
+		if(is_unbalanced(navStack)){
+			adjust_height(tree,navStack);
+		}
+		free(navStack);
+		return 1;
+	}
+
+	free(navStack);
+	return 0;
+}
 
 int isEmptyT(Tree * tree){
 	return (tree->root==NULL);
@@ -255,4 +364,3 @@ void debug(Tree * tree){
 
 /* Insert and print the address of the new node*/
 int insertDebug(Tree *, int );
-

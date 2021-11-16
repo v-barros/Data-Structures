@@ -54,7 +54,7 @@ int main(void){
 	    		    scanf("%d", &i);
 	    		    printf("\n");
 	    		    while(getchar()!='\n');
-	    		   // delete(tree, i);
+	    		   	delete(tree, i);
 			  break;
 	        case 0:
 	        	break;
